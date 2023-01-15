@@ -1,7 +1,7 @@
 package os.component.compare;
 
 import org.junit.Test;
-import os.component.compare.compare.CompareDO;
+import os.component.compare.compare.CompareDto;
 import os.component.compare.compare.CompareUtils;
 import os.component.compare.compare.CompareVO;
 import os.component.compare.model.Document;
@@ -23,8 +23,8 @@ public class CompareTest {
         passenger2.setId(1000L);
         passenger2.setName("李四");
         passenger2.setDob(new Date());
-        List<CompareDO> compareDOList = CompareUtils.compareBean(1, passenger1, passenger2);
-        System.out.println(compareDOList);
+        List<CompareDto> compareDtoList = CompareUtils.compareBean(1, passenger1, passenger2);
+        System.out.println(compareDtoList);
 
         List<Object> documents = new ArrayList<>();
         Document document1 = new Document();
@@ -45,11 +45,11 @@ public class CompareTest {
         document4.setIssueCountry("LSS");
         documents1.add(document3);
         documents1.add(document4);
-        List<CompareDO> compareDOList1 = CompareUtils.compareBeanList(2, documents, documents1);
-        System.out.println(compareDOList1);
+        List<CompareDto> compareDtoList1 = CompareUtils.compareBeanList(2, documents, documents1);
+        System.out.println(compareDtoList1);
 
-        compareDOList.addAll(compareDOList1);
-        List<CompareVO> changedFiledMap = CompareUtils.getChangedFiledMap(Arrays.asList(Passenger.class, Document.class), compareDOList);
+        compareDtoList.addAll(compareDtoList1);
+        List<CompareVO> changedFiledMap = CompareUtils.getChangedFiledMap(Arrays.asList(Passenger.class, Document.class), compareDtoList);
         System.out.println(changedFiledMap);
     }
 }

@@ -22,41 +22,41 @@ public class CompareUtils {
     /**
      * 获取最新一次操作记录所有的字段变更并分组, 返回对应的变更过的字段
      *
-     * @param compareDOList 最新一次操作记录变更的字段列表
+     * @param compareDtoList 最新一次操作记录变更的字段列表
      * @param clazzs        涉及到的类列表
      */
-    public static final List<CompareVO> getChangedFiledMap(List<Class> clazzs, List<CompareDO> compareDOList) {
+    public static final List<CompareVO> getChangedFiledMap(List<Class> clazzs, List<CompareDto> compareDtoList) {
         Map<String, String> fieldNoteMap = new HashMap<>();
         for (Class clazz : clazzs) {
             fieldNoteMap.putAll(getFieldNoteMap(clazz));
         }
-        return getChangedFiledMap(fieldNoteMap, compareDOList);
+        return getChangedFiledMap(fieldNoteMap, compareDtoList);
     }
 
     /**
      * 获取一次操作记录所有的字段变更并分组、进行字段名转换
      *
-     * @param compareDOList 一次操作记录的所有字段变更记录
+     * @param compareDtoList 一次操作记录的所有字段变更记录
      * @param fieldNoteMap  多个类, 变更的字段名不能相同
      */
     private static final List<CompareVO> getChangedFiledMap(Map<String, String> fieldNoteMap,
-                                                            List<CompareDO> compareDOList) {
+                                                            List<CompareDto> compareDtoList) {
         List<CompareVO> compareVOList = new ArrayList<>();
-        if (compareDOList == null || compareDOList.isEmpty()) {
+        if (compareDtoList == null || compareDtoList.isEmpty()) {
             return compareVOList;
         }
 
-        Map<String, List<CompareDO>> classTypeCompare = compareDOList.
-                stream().collect(Collectors.groupingBy(CompareDO::getClassType));
+        Map<String, List<CompareDto>> classTypeCompare = compareDtoList.
+                stream().collect(Collectors.groupingBy(CompareDto::getClassType));
         classTypeCompare.forEach((classType, compareList) -> {
-            Map<String, List<CompareDO>> compareKeyCompare = compareList.
-                    stream().collect(Collectors.groupingBy(CompareDO::getCompareKey));
+            Map<String, List<CompareDto>> compareKeyCompare = compareList.
+                    stream().collect(Collectors.groupingBy(CompareDto::getCompareKey));
             compareKeyCompare.forEach((compareKey, compares) -> {
                 CompareVO compareVO = new CompareVO();
                 compareVO.setClassType(classType);
                 compareVO.setCompareKey(compareKey);
                 compareVO.setChangeFieldMap(new HashMap<>());
-                for (CompareDO compareDO : compares) {
+                for (CompareDto compareDO : compares) {
                     compareVO.getChangeFieldMap().put(fieldNoteMap.get(compareDO.getFieldNote()), compareDO.getFieldNote());
                 }
                 compareVO.convertStrView();
@@ -71,13 +71,13 @@ public class CompareUtils {
      *
      * @param foreignId 对比结果关联的外键ID、比如操作记录ID
      */
-    public static final List<CompareDO> compareBeanList(Serializable foreignId,
-                                                        List<Object> sources, List<Object> targets) throws Exception {
+    public static final List<CompareDto> compareBeanList(Serializable foreignId,
+                                                         List<Object> sources, List<Object> targets) throws Exception {
         // sources为空、则认为targets全部在变更中新增
         Assert.notNull(sources, "sources can not be null.");
         Assert.notNull(targets, "targets can not be null.");
         Assert.notEmpty(targets, "targets can not be empty.");
-        List<CompareDO> compareDOList = new ArrayList<>();
+        List<CompareDto> compareDOList = new ArrayList<>();
         for (Object target : targets) {
             String targetCompareKey = getCompareFieldValue(target);
             String targetClassName = target.getClass().getCanonicalName();
@@ -108,11 +108,11 @@ public class CompareUtils {
      *
      * @param foreignId 对比结果关联的外键ID、比如操作记录ID
      */
-    public static final List<CompareDO> compareBean(Serializable foreignId,
-                                                    Object source, Object target) throws Exception {
+    public static final List<CompareDto> compareBean(Serializable foreignId,
+                                                     Object source, Object target) throws Exception {
         Assert.notNull(source, "source can not be null.");
         Assert.notNull(target, "target can not be null.");
-        List<CompareDO> compareDOList = new ArrayList<>();
+        List<CompareDto> compareDOList = new ArrayList<>();
         String sourceCompareKey = getCompareFieldValue(source);
         String targetCompareKey = getCompareFieldValue(target);
         String sourceClassName = source.getClass().getCanonicalName();
@@ -129,14 +129,14 @@ public class CompareUtils {
     /**
      * Map 字段数据对比
      */
-    private static final List<CompareDO> compareMap(Map<String, String> sourceMap, Map<String, String> targetMap,
-                                                    Serializable foreignId, String compareKey, String classType) {
-        List<CompareDO> compareDOList = new ArrayList<>();
+    private static final List<CompareDto> compareMap(Map<String, String> sourceMap, Map<String, String> targetMap,
+                                                     Serializable foreignId, String compareKey, String classType) {
+        List<CompareDto> compareDOList = new ArrayList<>();
         for (Map.Entry<String, String> entry : targetMap.entrySet()) {
             String fieldNote = entry.getKey();
             String newValue = entry.getValue();
             if (!"".equals(newValue) && !newValue.equals(sourceMap.get(fieldNote))) {
-                CompareDO compareDO = new CompareDO();
+                CompareDto compareDO = new CompareDto();
                 compareDO.setForeignId(foreignId);
                 compareDO.setCompareKey(compareKey);
                 compareDO.setClassType(classType);

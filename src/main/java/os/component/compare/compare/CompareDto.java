@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-public class CompareDO {
+public class CompareDto {
     /**
      * 主键
      */
