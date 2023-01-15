@@ -131,23 +131,23 @@ public class CompareUtils {
      */
     private static final List<CompareDto> compareMap(Map<String, String> sourceMap, Map<String, String> targetMap,
                                                      Serializable foreignId, String compareKey, String classType) {
-        List<CompareDto> compareDOList = new ArrayList<>();
+        List<CompareDto> compareDtoList = new ArrayList<>();
         for (Map.Entry<String, String> entry : targetMap.entrySet()) {
             String fieldNote = entry.getKey();
             String newValue = entry.getValue();
             if (!"".equals(newValue) && !newValue.equals(sourceMap.get(fieldNote))) {
-                CompareDto compareDO = new CompareDto();
-                compareDO.setForeignId(foreignId);
-                compareDO.setCompareKey(compareKey);
-                compareDO.setClassType(classType);
-                compareDO.setFieldNote(fieldNote);
-                compareDO.setNewValue(newValue);
-                compareDO.setOldValue(sourceMap.getOrDefault(fieldNote, ""));
-                compareDO.setCreateTime(LocalDateTime.now());
-                compareDOList.add(compareDO);
+                CompareDto compareDto = new CompareDto();
+                compareDto.setForeignId(foreignId);
+                compareDto.setCompareKey(compareKey);
+                compareDto.setClassType(classType);
+                compareDto.setFieldNote(fieldNote);
+                compareDto.setNewValue(newValue);
+                compareDto.setOldValue(sourceMap.getOrDefault(fieldNote, ""));
+                compareDto.setCreateTime(LocalDateTime.now());
+                compareDtoList.add(compareDto);
             }
         }
-        return compareDOList;
+        return compareDtoList;
     }
 
     /**
